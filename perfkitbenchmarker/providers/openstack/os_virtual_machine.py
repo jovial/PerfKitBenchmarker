@@ -360,11 +360,18 @@ class OpenStackVirtualMachine(virtual_machine.BaseVirtualMachine):
       self.ip_address = self.floating_ip.floating_ip_address
 
   def _GetNetworkIPAddress(self, server_dict, network_name):
-    addresses = server_dict['addresses'].split(',')
-    for address in addresses:
-      if network_name in address:
-        _, ip = address.split('=')
-        return ip
+    addresses = server_dict['addresses']
+    try:
+      # Try newer format first. Addresses is a dictionary of network name to a
+      # list of IPs.
+      net_addresses = addresses.items().get(network_name, [])
+      return net_addresses.get(0)
+    except:
+      # Fallback to parsing as string
+      for address in addresses.split(','):
+        if network_name in address:
+          _, ip = address.split('=')
+          return ip
 
   def _GetInternalNetworkCIDR(self):
     """Returns IP addresses source range of internal network."""
