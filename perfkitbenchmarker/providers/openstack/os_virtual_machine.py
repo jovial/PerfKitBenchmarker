@@ -418,6 +418,10 @@ class OpenStackVirtualMachine(virtual_machine.BaseVirtualMachine):
       result['post_provisioning_script'] = self.post_provisioning_script
     return result
 
+  def ShouldDownloadPreprovisionedData(self, module_name, filename):
+     """Returns whether or not preprovisioned data is available."""
+     return False
+
 
 class Rhel7BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
                                         linux_virtual_machine.Rhel7Mixin):
