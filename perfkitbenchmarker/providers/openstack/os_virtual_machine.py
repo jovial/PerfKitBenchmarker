@@ -440,5 +440,5 @@ class Ubuntu1804BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
 
 
 class Ubuntu2004BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
-                                                 linux_virtual_machine.Ubuntu1804Mixin):
+                                                 linux_virtual_machine.Ubuntu2004Mixin):
   DEFAULT_IMAGE = 'ubuntu-20.04'
