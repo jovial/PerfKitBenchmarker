@@ -431,3 +431,13 @@ class CentOs7BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
 class ClearBasedOpenStackVirtualMachine(OpenStackVirtualMachine,
                                         linux_virtual_machine.ClearMixin):
   DEFAULT_IMAGE = 'upstream-clear'
+
+
+class Ubuntu1804BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
+                                                 linux_virtual_machine.Ubuntu1804Mixin):
+  DEFAULT_IMAGE = 'ubuntu-18.04'
+
+
+class Ubuntu2004BasedOpenStackVirtualMachine(OpenStackVirtualMachine,
+                                                 linux_virtual_machine.Ubuntu1804Mixin):
+  DEFAULT_IMAGE = 'ubuntu-20.04'
