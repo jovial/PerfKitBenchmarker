@@ -364,8 +364,9 @@ class OpenStackVirtualMachine(virtual_machine.BaseVirtualMachine):
     try:
       # Try newer format first. Addresses is a dictionary of network name to a
       # list of IPs.
-      net_addresses = addresses.items().get(network_name, [])
-      return net_addresses.get(0)
+      net_addresses = addresses.get(network_name, [])
+      if net_addresses:
+          return net_addresses[0]
     except:
       # Fallback to parsing as string
       for address in addresses.split(','):
