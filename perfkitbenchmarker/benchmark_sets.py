@@ -321,7 +321,7 @@ def _GetBenchmarksFromUserConfig(user_config):
     except KeyError:
       raise ValueError('Benchmark "%s" not valid on os_type "%s"' %
                        (name, FLAGS.os_type))
-    benchmark_config_list.append((benchmark_module, user_config))
+    benchmark_config_list.append((benchmark_module, user_config or {}))
 
   return benchmark_config_list
 

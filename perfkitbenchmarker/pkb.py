@@ -636,6 +636,8 @@ def _CreateBenchmarkSpecs():
         benchmark_config_spec.BenchmarkConfigSpec)
     config = config_spec_class(name, expected_os_types=expected_os_types,
                                flag_values=FLAGS, **config_dict)
+    if not config.flags:
+      config.flags = {}
 
     # Assign a unique ID to each benchmark run. This differs even between two
     # runs of the same benchmark within a single PKB run.
