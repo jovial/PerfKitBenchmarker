@@ -424,19 +424,30 @@ class BaseLinuxMixin(virtual_machine.BaseOsMixin):
   def SetupProxy(self):
     """Sets up proxy configuration variables for the cloud environment."""
     env_file = '/etc/environment'
+    profile_file = '/etc/profile'
     commands = []
 
     if FLAGS.http_proxy:
       commands.append("echo 'http_proxy=%s' | sudo tee -a %s" % (
           FLAGS.http_proxy, env_file))
+      commands.append("echo 'export http_proxy=%s' | sudo tee -a %s" % (
+          FLAGS.http_proxy, profile_file))
 
     if FLAGS.https_proxy:
       commands.append("echo 'https_proxy=%s' | sudo tee -a %s" % (
           FLAGS.https_proxy, env_file))
+      commands.append("echo 'export https_proxy=%s' | sudo tee -a %s" % (
+          FLAGS.https_proxy, profile_file))
 
     if FLAGS.ftp_proxy:
       commands.append("echo 'ftp_proxy=%s' | sudo tee -a %s" % (
           FLAGS.ftp_proxy, env_file))
+      commands.append("echo 'ftp_proxy=%s' | sudo tee -a %s" % (
+          FLAGS.ftp_proxy, profile_file))
+
+    if FLAGS.no_proxy:
+      commands.append("echo 'export no_proxy=%s' | sudo tee -a %s" % (
+          FLAGS.no_proxy, profile_file))
 
     if commands:
       self.RemoteCommand(';'.join(commands))
@@ -1029,6 +1040,14 @@ class BaseLinuxMixin(virtual_machine.BaseOsMixin):
         ssh_cmd.extend(['-t', '-t', 'bash -l -c "%s"' % command])
         self._pseudo_tty_lock.acquire()
       else:
+        # ADD environment variables here
+        if FLAGS.http_proxy:
+          ssh_cmd.append("http_proxy=%s" % FLAGS.http_proxy)
+        if FLAGS.https_proxy:
+          ssh_cmd.append("https_proxy=%s" % FLAGS.https_proxy)
+        if FLAGS.no_proxy:
+          ssh_cmd.append("no_proxy=%s" % FLAGS.no_proxy)
+
         ssh_cmd.append(command)
 
       for _ in range(retries):
@@ -1564,30 +1583,6 @@ class ClearMixin(BaseLinuxMixin):
     stdout, _ = self.RemoteCommand('swupd info | grep Installed')
     return 'Clear Linux build: {0}'.format(
         regex_util.ExtractGroup(CLEAR_BUILD_REGEXP, stdout))
-
-  def SetupProxy(self):
-    """Sets up proxy configuration variables for the cloud environment."""
-    super(ClearMixin, self).SetupProxy()
-    profile_file = '/etc/profile'
-    commands = []
-
-    if FLAGS.http_proxy:
-      commands.append("echo 'export http_proxy=%s' | sudo tee -a %s" % (
-          FLAGS.http_proxy, profile_file))
-
-    if FLAGS.https_proxy:
-      commands.append("echo 'https_proxy=%s' | sudo tee -a %s" % (
-          FLAGS.https_proxy, profile_file))
-
-    if FLAGS.ftp_proxy:
-      commands.append("echo 'ftp_proxy=%s' | sudo tee -a %s" % (
-          FLAGS.ftp_proxy, profile_file))
-
-    if FLAGS.no_proxy:
-      commands.append("echo 'export no_proxy=%s' | sudo tee -a %s" % (
-          FLAGS.no_proxy, profile_file))
-    if commands:
-      self.RemoteCommand(';'.join(commands))
 
   def RemoteCommand(self, command, **kwargs):
     """Runs a command inside the container.
