@@ -858,7 +858,7 @@ class BaseLinuxMixin(virtual_machine.BaseOsMixin):
       return
     if disk.SMB == disk_type:
       return
-    umount_cmd = '[[ -d /mnt ]] && sudo umount /mnt; '
+    umount_cmd = 'mountpoint -q -- /mnt && sudo umount /mnt; '
     # TODO(user): Allow custom disk formatting options.
     if FLAGS.disk_fs_type == 'xfs':
       block_size = FLAGS.disk_block_size or 512

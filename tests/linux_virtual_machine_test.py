@@ -145,7 +145,7 @@ class TestDiskOperations(pkb_common_test_case.PkbCommonTestCase):
     self.assertRemoteHostCalled(mkdir_cmd, fstab_cmd)
 
   def testFormatDisk(self):
-    expected_command = ('[[ -d /mnt ]] && sudo umount /mnt; '
+    expected_command = ('mountpoint -q -- /mnt && sudo umount /mnt; '
                         'sudo mke2fs -F -E lazy_itable_init=0,discard '
                         '-O ^has_journal -t ext4 -b 4096 dp')
     self.vm.FormatDisk('dp')
