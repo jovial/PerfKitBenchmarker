@@ -1044,11 +1044,11 @@ class BaseLinuxMixin(virtual_machine.BaseOsMixin):
         environment_vars = []
 
         if FLAGS.http_proxy:
-          environment_vars.append("http_proxy=%s" % FLAGS.http_proxy)
+          environment_vars.append("export http_proxy=%s" % FLAGS.http_proxy)
         if FLAGS.https_proxy:
-          environment_vars.append("https_proxy=%s" % FLAGS.https_proxy)
+          environment_vars.append("export https_proxy=%s" % FLAGS.https_proxy)
         if FLAGS.no_proxy:
-          environment_vars.append("no_proxy=%s" % FLAGS.no_proxy)
+          environment_vars.append("export no_proxy=%s" % FLAGS.no_proxy)
 
         if environment_vars:
             environment_vars.append(";")
