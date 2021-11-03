@@ -1041,13 +1041,19 @@ class BaseLinuxMixin(virtual_machine.BaseOsMixin):
         self._pseudo_tty_lock.acquire()
       else:
         # ADD environment variables here
-        if FLAGS.http_proxy:
-          ssh_cmd.append("http_proxy=%s" % FLAGS.http_proxy)
-        if FLAGS.https_proxy:
-          ssh_cmd.append("https_proxy=%s" % FLAGS.https_proxy)
-        if FLAGS.no_proxy:
-          ssh_cmd.append("no_proxy=%s" % FLAGS.no_proxy)
+        environment_vars = []
 
+        if FLAGS.http_proxy:
+          environment_vars.append("http_proxy=%s" % FLAGS.http_proxy)
+        if FLAGS.https_proxy:
+          environment_vars.append("https_proxy=%s" % FLAGS.https_proxy)
+        if FLAGS.no_proxy:
+          environment_vars.append("no_proxy=%s" % FLAGS.no_proxy)
+
+        if environment_vars:
+            environment_vars.append(";")
+
+        ssh_cmd.extend(environment_vars)
         ssh_cmd.append(command)
 
       for _ in range(retries):
