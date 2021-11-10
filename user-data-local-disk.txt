@@ -1,0 +1,4 @@
+#cloud-config
+
+mounts:
+  - [/dev/sdb, null]
